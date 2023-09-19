@@ -44,25 +44,6 @@
                   <h2>{{ filename }}</h2>
 
                   <div class="row">
-                    <!-- 
-                      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-                      <div class="card card-statistic-1">
-                          <d class="card-icon bg-success">
-                          <id class="fas fa-circle"></id>
-                          </d/api/get-error-uploader-file/${id}iv>
-                          <div class="card-wrap"> if(res.status==200){
-                              
-                              
-                          <div class="card-header">
-                              <h4>Total</h4>
-                          </div>
-                          <div class="card-body">
-                              {{ total }}
-                          </div>
-                          </div>
-                      </div>
-                      </div> 
-                  -->
                     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                       <div class="card card-statistic-1">
                         <div class="card-icon bg-primary">
