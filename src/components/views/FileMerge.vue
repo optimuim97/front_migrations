@@ -2,7 +2,7 @@
   <div>
     <div id="app">
       <div class="main-wrapper main-wrapper-1">
-        <Sidebar></Sidebar>
+        <!-- <Sidebar></Sidebar> -->
         <!-- <Navbar></Navbar> -->
         <!-- Main Content -->
         <div class="main-content">
@@ -12,87 +12,102 @@
             </div>
 
             <div class="section-body section_body">
+              <div
+                class="d-flex justify-content-start"
+                v-if="!excludeValues.includes(field_label)"
+              >
+                <input
+                  type="text"
+                  placeholder="Rechercher Marchant avec profil id"
+                  class="form-control mb-2"
+                  v-model="mechantProfil_id"
+                />
+              </div>
+
               <div class="row">
                 <div class="col-md-8">
                   <div class="row">
                     <div class="col-md-6">
-                      
                       <div class="d-flex justify-content-start">
-                        <h4>
-                          Ancien (Apaym)
-                        </h4>
-  
+                        <h4>Ancien (APAYM)</h4>
+
                         <input
-                            type="checkbox"
-                            name="label"
-                            @change="selectAllOld(label, item)"
-                            :ref="label"
-                        />
-                      </div>
-
-                      <div v-for="(item, label, index) in oldData" :key="index">
-                        <label v-if="!excludeValues.includes(label)">
-                          {{ label }}
-                        </label>
-
-                        <div
-                          class="d-flex justify-content-start"
-                          v-if="!excludeValues.includes(label)"
-                        >
-                          <input
-                            type="text"
-                            :placeholder="label"
-                            class="form-control mb-2"
-                            :value="item"
-                          />
-
-                          <input
-                            type="checkbox"
-                            name="label"
-                            @change="checkOtherValue(label, item)"
-                            :ref="label"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-
-                      <div class="d-flex justify-content-start">
-                        <h4>
-                          Nouveau (UNITEC)
-                        </h4>
-  
-                        <input
-                            type="checkbox"
-                            name="label"
-                            @change="selectAllNew(label, item)"
-                            :ref="label"
+                          type="checkbox"
+                          name="label"
+                          @change="selectAllOld(field_label, item)"
+                          :ref="field_label"
                         />
                       </div>
 
                       <div
-                        v-for="(item, label, index) in mergeData"
+                        v-for="(item, field_label, index) in oldData"
                         :key="index"
                       >
-                        <label v-if="!excludeValues.includes(label)">
-                          {{ label }}
+                        <label v-if="!excludeValues.includes(field_label)">
+                          {{ field_label }}
                         </label>
 
                         <div
                           class="d-flex justify-content-start"
-                          v-if="!excludeValues.includes(label)"
+                          v-if="!excludeValues.includes(field_label)"
                         >
+                        
                           <input
                             type="text"
-                            :placeholder="label"
+                            :placeholder="field_label"
                             class="form-control mb-2"
                             :value="item"
+                            readonly
                           />
 
                           <input
-                            type="checkbox"
-                            name="label"
-                            @change="checkOtherValue(label, item)"
+                            :value="item"
+                            type="radio"
+                            :name="field_label"
+                            @change="checkOtherValue(field_label, item)"
+                          />
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="d-flex justify-content-start">
+                        <h4>Nouveau (UNITEC)</h4>
+
+                        <input
+                          type="checkbox"
+                          name="label"
+                          @change="selectAllNew(label, item)"
+                          :ref="label"
+                        />
+                      </div>
+
+                      <div
+                        v-for="(item, field_label, index) in mergeData"
+                        :key="index"
+                      >
+                        <label v-if="!excludeValues.includes(field_label)">
+                          {{ field_label }}
+                        </label>
+
+                        <div
+                          class="d-flex justify-content-start"
+                          v-if="!excludeValues.includes(field_label)"
+                        >
+                          <input
+                            type="text"
+                            :placeholder="field_label"
+                            class="form-control mb-2"
+                            :value="item"
+                            readonly
+                          />
+
+                          <input
+                            :value="item"
+                            type="radio"
+                            :name="field_label"
+                            @change="checkOtherValue(field_label, item)"
                           />
                         </div>
                       </div>
@@ -100,21 +115,25 @@
                   </div>
                 </div>
 
+                <!-- Final -->
                 <div class="col-md-4">
                   <h4>Final</h4>
 
-                  <div v-for="(item, label, index) in finalList" :key="index">
-                    <label v-if="!excludeValues.includes(label)">
-                      {{ label }}
+                  <div
+                    v-for="(item, field_label, index) in finalList"
+                    :key="index"
+                  >
+                    <label v-if="!excludeValues.includes(field_label)">
+                      {{ field_label }}
                     </label>
 
                     <div
                       class="d-flex justify-content-start"
-                      v-if="!excludeValues.includes(label)"
+                      v-if="!excludeValues.includes(field_label)"
                     >
                       <input
                         type="text"
-                        :placeholder="label"
+                        :placeholder="field_label"
                         class="form-control mb-2"
                         :value="item"
                       />
@@ -127,11 +146,12 @@
                     Soumettre
                   </button>
                 </div>
+                <!-- Final End -->
               </div>
             </div>
           </section>
         </div>
-        <Footer></Footer>
+        <!-- <Footer></Footer> -->
       </div>
     </div>
   </div>
@@ -139,8 +159,8 @@
 
 <script>
 // import Navbar from "../layouts/Navbar.vue";
-import Sidebar from "../layouts/Sidebar.vue";
-import Footer from "../layouts/Footer.vue";
+// import Sidebar from "../layouts/Sidebar.vue";
+// import Footer from "../layouts/Footer.vue";
 
 // import ListContent from "../views/contents/ListContent.vue";
 
@@ -151,8 +171,8 @@ export default {
       mergeData: null,
       profilid: 211495,
       finalList: {
-        id_MerchantProfil: null,
         profil_id: null,
+        id_MerchantProfil: null,
         subMerchantId: null,
         outlet: null,
         tpeidentifiant: null,
@@ -256,37 +276,30 @@ export default {
         "createdAt",
         "merge_at",
         "save_raison",
+        "profilid",
+        "profil_id",
       ],
     };
   },
   components: {
     // Navbar,
-    Sidebar,
-    Footer,
+    // Sidebar,
+    // Footer,
   },
   methods: {
     getMergeData() {
       this.axios
         .get("api/v1/merge-manage", { params: { profil_id: 211495 } })
         .then((res) => {
-          // console.log(res)
           this.mergeData = res.data.merge;
-          this.mergeData.profil_id = this.mergeData.profilid;
-
-          // console.log(this.mergeData['profilid']);
-
-          // this.megeData["profilid"] = this.mergeData["profil_id"];
-          // delete this.megeData["profilid"];
+          // this.mergeData.profil_id = this.mergeData.profilid;
 
           this.oldData = res.data.old;
-          this.oldData.profil_id = this.oldData.profilid;
+          // this.oldData.profil_id = this.oldData.profilid;
 
-          // this.oldData["profilid"] = this.oldData["profil_id"];
-          // delete this.oldData["profilid"];
+          this.finalList.profil_id = this.oldData.profilid;
 
-          // if(res.status == 200){
-          this.fileLists = res.data.data;
-          // }
+          // alert(this.finalList.profil_id );
         })
         .catch((e) => {
           if (e.response.data.code == 401) {
@@ -295,32 +308,44 @@ export default {
           console.log(e?.response);
         });
     },
-    checkOtherValue(label, item) {
-      if (label in this.finalList) {
-        if (this.finalList[label] != null) {
+    checkOtherValue(field_label, item) {
+      if (field_label in this.finalList) {
+        if (this.finalList[field_label] != null) {
           console.log("ref checker");
-          const elmt = this.$refs[label];
-          console.log(elmt);
+          const $el = this.$refs[field_label];
+          console.log($el);
+          // console.log($el);
           // $el.focus()
         }
 
-        this.finalList[label] = item;
+        this.finalList[field_label] = item;
       }
     },
     submitFinalData() {
-        // console.log(this.finalList);
-        this.axios
-        .post("api/v1/upate-apaym-pro", this.finalList)
+      this.finalList.profil_id = this.finalList.profilid;
+
+      if (this.finalList.profil_id == null) {
+        return {
+          status: 400,
+          message: "Profil id vide",
+        };
+      }
+
+      // alert(this.finalList.profil_id);
+
+      this.axios
+        .post("api/v1/upate-apaym-pro", this.finalList, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((res) => {
-          if (res.status == 200) {
-            // this.$swal("Bien éffectué !");
-            console.log(res);
-          } else {
-            console.log(res);
+          if (res.status == 200 && res.data.responseCode == 1) {
+            this.$swal(res.data.responseMessage);
           }
         })
         .catch((e) => {
-          console.log(e.response);
+          if (e?.response?.status == 401) {
+            this.$swal("Une erreur est survenue");
+          }
         });
     },
     selectAllOld() {
@@ -329,11 +354,14 @@ export default {
     selectAllNew() {
       this.finalList = this.mergeData;
     },
+    // getMerchantByProfilID($word) {
+    //   return $word;
+    // }
   },
-  created() {
+  mounted() {
     this.getMergeData();
-  }
-  };
+  },
+};
 </script>
 
 <style lang="css">
@@ -351,7 +379,7 @@ input[type="radio"] {
 .main-content {
   padding-left: 280px;
   padding-right: 30px;
-  /* padding-top: 80px; */
+  padding-top: 0px;
   width: 100%;
   position: relative;
 }

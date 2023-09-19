@@ -39,7 +39,7 @@
                     </div>
 
                     <button
-                      class="btn btn-round bg-primary text-white w-100"
+                      class="btn btn-round btn-primary text-white w-100"
                       v-show="!isDisplay"
                     >
                       <!-- <i class="fas fa-rocket"></i> -->

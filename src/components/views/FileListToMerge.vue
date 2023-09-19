@@ -8,7 +8,7 @@
         <div class="main-content">
           <section class="section">
             <div class="section-header">
-              <h1>Liste des fichiers</h1>
+              <h1>Liste des doublons (Business Apaym)</h1>
             </div>
 
             <div class="row">

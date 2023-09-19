@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import vuetify from './plugins/vuetify'
+// import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import Routes from "./utils/routes.js";
 import User from "./utils/User";
@@ -19,7 +19,8 @@ loadFonts()
 window.User = User;
 window.Storage = AppStorage
 
-const baseUrl = "https://api.abidjan.net";
+// const baseUrl = "https://api.abidjan.net";
+const baseUrl = "http://127.0.0.1:8000";
 axios.defaults.baseURL = baseUrl;
 
 const app = createApp(App);
@@ -31,7 +32,7 @@ app.config.globalProperties.User = User;
 app.config.globalProperties.baseUrl = baseUrl;
 app.config.globalProperties.abj = "https://abidjan.net";
 
-app.use(vuetify)
-app.use(VueSweetalert2, { confirmButtonColor: "#D21D3A" });
+// app.use(vuetify)
+app.use(VueSweetalert2, { confirmButtonColor: "#007bff" });
 app.use(Routes)
 app.mount('#app')

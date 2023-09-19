@@ -1,38 +1,126 @@
 <template>
   <div>
-    <v-container>
-      <v-layout align-center justify-center>
-        <div class="pa-md-4 mx-lg-auto" width="400px">
-          <div class="my-7">
-            <v-icon large centered right> Se Connecter </v-icon>
-          </div>
-
-          <v-form ref="form" @submit.prevent="submitLoginForm">
-            <v-text-field
-              v-model="form.username"
-              label="Nom d'utilisateur"
-              required
-            ></v-text-field>
-
-            <v-text-field
-              v-model="form.password"
-              label="Mot de passe"
-              type="password"
-              required
+    <div id="app">
+      <section class="section">
+        <div class="container mt-5">
+          <div class="row">
+            <div
+              class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4"
             >
-            </v-text-field>
+              <!-- <div class="login-brand">
+                <img
+                  src="assets/img/stisla-fill.svg"
+                  alt="logo"
+                  width="100"
+                  class="shadow-light rounded-circle"
+                />
+              </div> -->
 
-            <div class="w-100">
-              <v-btn type="submit" color="primary" class="mr-2">
-                Connexion
-              </v-btn>
+              <div class="card card-primary">
+                <div class="card-header"><h4>Connexion</h4></div>
 
-              <v-btn color="secondary" to="/register"> Inscription </v-btn>
+                <div class="card-body">
+                  <form
+                    class="needs-validation"
+                    novalidate=""
+                    @submit.prevent="submitLoginForm"
+                  >
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input
+                        id="email"
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        tabindex="1"
+                        required
+                        autofocus
+                        v-model="form.username"
+                      />
+                      <div class="invalid-feedback">Ajouter votre email</div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="d-block">
+                        <label for="password" class="control-label"
+                          >Mot de passe</label
+                        >
+                        <div class="float-right">
+                          <a
+                            href="auth-forgot-password.html"
+                            class="text-small"
+                          >
+                            Mot de passe oublié ?
+                          </a>
+                        </div>
+                      </div>
+                      <input
+                        id="password"
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        tabindex="2"
+                        required
+                        v-model="form.password"
+                      />
+                      <div class="invalid-feedback">
+                        Ajouter votre mot de passe
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox">
+                        <input
+                          type="checkbox"
+                          name="remember"
+                          class="custom-control-input"
+                          tabindex="3"
+                          id="remember-me"
+                        />
+                        <!-- <label class="custom-control-label" for="remember-me"
+                          >Remember Me</label
+                        > -->
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-lg btn-block"
+                        tabindex="4"
+                      >
+                        Connexion
+                      </button>
+                    </div>
+                  </form>
+                  <!-- <div class="text-center mt-4 mb-3">
+                    <div class="text-job text-muted">Login With Social</div>
+                  </div> -->
+                  <!-- <div class="row sm-gutters">
+                    <div class="col-6">
+                      <a class="btn btn-block btn-social btn-facebook">
+                        <span class="fab fa-facebook"></span> Facebook
+                      </a>
+                    </div>
+                    <div class="col-6">
+                      <a class="btn btn-block btn-social btn-twitter">
+                        <span class="fab fa-twitter"></span> Twitter
+                      </a>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+              <!-- <div class="mt-5 text-muted text-center">
+                Don't have an account? <a href="auth-register.html">Create One</a>
+              </div> -->
+              <div class="simple-footer">
+                Copyright &copy; {{ new Date().getFullYear() }}
+              </div>
             </div>
-          </v-form>
+          </div>
         </div>
-      </v-layout>
-    </v-container>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -65,15 +153,15 @@ export default {
               const access_token = res.data.token;
 
               // if (this.Token.isValid(access_token, username)) {
-                //Store data on localStorage
-                this.AppStorage.storeData(username, access_token);
-                // EventBus.$emit("login");
-                // let axios = require("axios");
-                const JWTToken = `Bearer ${localStorage.getItem("token")}`;
-                this.axios.defaults.headers.common["Authorization"] = JWTToken;
+              //Store data on localStorage
+              this.AppStorage.storeData(username, access_token);
+              // EventBus.$emit("login");
+              // let axios = require("axios");
+              const JWTToken = `Bearer ${localStorage.getItem("token")}`;
+              this.axios.defaults.headers.common["Authorization"] = JWTToken;
 
-                this.$swal("Bien éffectué", "Vous êtes connecté", "success");
-                this.$router.push("/dash");
+              this.$swal("Bien éffectué", "Vous êtes connecté", "success");
+              this.$router.push("/dash");
 
               // } else {
               //   this.$swal("Bien éffectué", "Vous êtes connecté", "success");
@@ -86,7 +174,7 @@ export default {
           })
           .catch((error) => {
             // console.log(">>>>>>> Error Login");
-            // console.log(error);
+            console.log(error);
 
             if (error?.response?.status == 401) {
               console.log("401");

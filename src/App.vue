@@ -1,11 +1,9 @@
 <template>
-  <v-app>
-    <Sidebar v-if="$router.name!='Login'"></Sidebar>
-    <v-main>
+  <div>
+    <Sidebar v-if="$route.name!='Login'"></Sidebar>
       <router-view></router-view>
-    </v-main>
     <Footer></Footer>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -16,6 +14,25 @@ import Footer from "./components/layouts/Footer.vue";
 export default {
   name: 'App',
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   components: {
       // Navbar,
       Sidebar,
