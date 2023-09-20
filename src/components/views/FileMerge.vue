@@ -1,12 +1,12 @@
 <template>
   <div>
     <div id="app">
-      <div class="main-wrapper main-wrapper-1">
+      <div class="main-wrapper main-wrapper-1 py-3">
         <!-- <Sidebar></Sidebar> -->
         <!-- <Navbar></Navbar> -->
         <!-- Main Content -->
         <div class="main-content">
-          <section class="section">
+          <section class="section container card card-fullheight py-3">
             <div class="section-header">
               <h1>Fusion</h1>
             </div>
@@ -18,25 +18,37 @@
               >
                 <input
                   type="text"
-                  placeholder="Rechercher Marchant avec profil id"
-                  class="form-control mb-2"
-                  v-model="mechantProfil_id"
-                />
+                  placeholder="Rechercher avec  profilID"
+                  class="form-control form-control-rounded mb-2"
+                  v-model="profilid"
+                  @change="searchMerge()"
+                />    
+              </div>
+
+              <div class="btn_action">
+                <div class="item">
+                  <button
+                    class="btn btn-primary btn-rounded my-3"
+                    @click="selectAllOld()"
+                  >
+                    Garder les nouvelles données
+                  </button>
+                  <button
+                    class="btn btn-primary btn-rounded ml-5 my-3"
+                    @click="selectAllNew()"
+                  >
+                    Garder les anciennes données
+                  </button>
+                </div>
               </div>
 
               <div class="row">
                 <div class="col-md-8">
                   <div class="row">
+                    <!-- Old -->
                     <div class="col-md-6">
                       <div class="d-flex justify-content-start">
                         <h4>Ancien (APAYM)</h4>
-
-                        <input
-                          type="checkbox"
-                          name="label"
-                          @change="selectAllOld(field_label, item)"
-                          :ref="field_label"
-                        />
                       </div>
 
                       <div
@@ -51,11 +63,17 @@
                           class="d-flex justify-content-start"
                           v-if="!excludeValues.includes(field_label)"
                         >
-                        
+                            
+                        <div v-if="field_label == 'marchantRegistreCommercePhoto'">
+                          <div>
+                            <img :src="item"  :alt="item">
+                          </div>
+                        </div>
+                          
                           <input
                             type="text"
                             :placeholder="field_label"
-                            class="form-control mb-2"
+                            class="form-control form-control-rounded mb-2"
                             :value="item"
                             readonly
                           />
@@ -65,22 +83,17 @@
                             type="radio"
                             :name="field_label"
                             @change="checkOtherValue(field_label, item)"
+                            :ref="`old-${field_label}`"
                           />
-
                         </div>
                       </div>
                     </div>
+                    <!-- Old End -->
 
+                    <!-- New -->
                     <div class="col-md-6">
                       <div class="d-flex justify-content-start">
                         <h4>Nouveau (UNITEC)</h4>
-
-                        <input
-                          type="checkbox"
-                          name="label"
-                          @change="selectAllNew(label, item)"
-                          :ref="label"
-                        />
                       </div>
 
                       <div
@@ -98,7 +111,7 @@
                           <input
                             type="text"
                             :placeholder="field_label"
-                            class="form-control mb-2"
+                            class="form-control form-control-rounded mb-2"
                             :value="item"
                             readonly
                           />
@@ -108,10 +121,12 @@
                             type="radio"
                             :name="field_label"
                             @change="checkOtherValue(field_label, item)"
+                            :ref="`new-${field_label}`"
                           />
                         </div>
                       </div>
                     </div>
+                    <!-- End New -->
                   </div>
                 </div>
 
@@ -134,23 +149,40 @@
                       <input
                         type="text"
                         :placeholder="field_label"
-                        class="form-control mb-2"
+                        class="form-control form-control-rounded mb-2"
                         :value="item"
+                        readonly
                       />
                     </div>
                   </div>
-                  <button
-                    class="btn btn-primary w-100"
-                    @click="submitFinalData"
-                  >
-                    Soumettre
-                  </button>
                 </div>
                 <!-- Final End -->
               </div>
             </div>
+
+            <button
+              class="btn btn-primary btn-rounded w-100 py-3 mt-lg-5"
+              @click="submitFinalData"
+            >
+              Mettre à jour
+            </button>
           </section>
         </div>
+
+        <VueModal v-show="isModalVisible" @close="closeModal">
+          <template #header>
+            <h2 class="titre text-uppercase" style="padding-left: 3.5%">
+              Connexion
+            </h2>
+          </template>
+
+          <template #body> 
+          </template>
+
+          <template #footer>
+          </template>
+        </VueModal>
+
         <!-- <Footer></Footer> -->
       </div>
     </div>
@@ -163,13 +195,14 @@
 // import Footer from "../layouts/Footer.vue";
 
 // import ListContent from "../views/contents/ListContent.vue";
+import VueModal from "../tools/VueModal.vue";
 
 export default {
   data() {
     return {
       oldData: null,
       mergeData: null,
-      profilid: 211495,
+      profilid: null,
       finalList: {
         profil_id: null,
         id_MerchantProfil: null,
@@ -279,17 +312,24 @@ export default {
         "profilid",
         "profil_id",
       ],
+      displayNew: null,
+      displayOld: null,
+      isModalVisible: false,
     };
   },
   components: {
+    VueModal,
     // Navbar,
     // Sidebar,
     // Footer,
   },
   methods: {
+    showModal() {
+      this.isModalVisible = true;
+    },
     getMergeData() {
       this.axios
-        .get("api/v1/merge-manage", { params: { profil_id: 211495 } })
+        .get("/v1/merge-manage", { params: { profil_id: this.profilid } })
         .then((res) => {
           this.mergeData = res.data.merge;
           // this.mergeData.profil_id = this.mergeData.profilid;
@@ -311,7 +351,7 @@ export default {
     checkOtherValue(field_label, item) {
       if (field_label in this.finalList) {
         if (this.finalList[field_label] != null) {
-          console.log("ref checker");
+          // console.log("ref checker");
           const $el = this.$refs[field_label];
           console.log($el);
           // console.log($el);
@@ -324,14 +364,14 @@ export default {
     submitFinalData() {
       this.finalList.profil_id = this.finalList.profilid;
 
+      this.showModal();
+
       if (this.finalList.profil_id == null) {
         return {
           status: 400,
           message: "Profil id vide",
         };
       }
-
-      // alert(this.finalList.profil_id);
 
       this.axios
         .post("api/v1/upate-apaym-pro", this.finalList, {
@@ -349,17 +389,31 @@ export default {
         });
     },
     selectAllOld() {
+      // Object.keys(this.$refs).forEach(el => {
+      //   let rad = this.$refs[el][0]
+      //   console.log(rad.value)
+      // })
+
+      this.displayOld = !this.displayOld;
       this.finalList = this.oldData;
+      //TODO  => Hide New
     },
     selectAllNew() {
+      // console.log(this.$refs)
       this.finalList = this.mergeData;
+      this.displayOld = !this.displayNew;
+      //TODO  => Hide New
     },
-    // getMerchantByProfilID($word) {
-    //   return $word;
-    // }
+    searchMerge(){
+      // alert(profilId)
+        this.getMergeData()
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    },
   },
   mounted() {
-    this.getMergeData();
+    // this.getMergeData();
   },
 };
 </script>
@@ -382,5 +436,15 @@ input[type="radio"] {
   padding-top: 0px;
   width: 100%;
   position: relative;
+}
+
+.btn_action {
+  display: flex;
+  justify-content: start;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
