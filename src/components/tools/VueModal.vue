@@ -30,7 +30,6 @@
           <slot name="body"> </slot>
           </section> 
         -->
-
         <!-- 
           <footer class="modal-footer">
           <slot name="footer"> </slot>
@@ -50,6 +49,9 @@ export default {
     close() {
       this.$emit("close");
     },
+    open(){
+      this.$emi('open')
+    }
   },
 };
 </script>

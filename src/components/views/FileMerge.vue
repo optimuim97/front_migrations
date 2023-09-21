@@ -21,8 +21,8 @@
                   placeholder="Rechercher avec  profilID"
                   class="form-control form-control-rounded mb-2"
                   v-model="profilid"
-                  @change="searchMerge()"
-                />    
+                  @keypress.enter="searchMerge()"
+                />
               </div>
 
               <div class="btn_action">
@@ -38,6 +38,12 @@
                     @click="selectAllNew()"
                   >
                     Garder les anciennes données
+                  </button>
+                  <button
+                    class="btn btn-primary btn-rounded ml-5 my-3"
+                    @click="AricheData()"
+                  >
+                    Archiver
                   </button>
                 </div>
               </div>
@@ -63,19 +69,20 @@
                           class="d-flex justify-content-start"
                           v-if="!excludeValues.includes(field_label)"
                         >
-                            
-                        <div v-if="field_label == 'marchantRegistreCommercePhoto'">
-                          <div>
-                            <img :src="item"  :alt="item">
+
+                          <div v-if="isImage.includes(field_label)">
+                              <img :src="item" :alt="item">
                           </div>
-                        </div>
-                          
+
                           <input
+                            :id="field_label"
                             type="text"
                             :placeholder="field_label"
                             class="form-control form-control-rounded mb-2"
                             :value="item"
                             readonly
+                            :key="index"
+                            :ref="field_label"
                           />
 
                           <input
@@ -83,7 +90,6 @@
                             type="radio"
                             :name="field_label"
                             @change="checkOtherValue(field_label, item)"
-                            :ref="`old-${field_label}`"
                           />
                         </div>
                       </div>
@@ -108,12 +114,17 @@
                           class="d-flex justify-content-start"
                           v-if="!excludeValues.includes(field_label)"
                         >
+
+                          
+
                           <input
+                            :id="field_label"
                             type="text"
                             :placeholder="field_label"
                             class="form-control form-control-rounded mb-2"
                             :value="item"
                             readonly
+                            :ref="field_label"
                           />
 
                           <input
@@ -121,7 +132,6 @@
                             type="radio"
                             :name="field_label"
                             @change="checkOtherValue(field_label, item)"
-                            :ref="`new-${field_label}`"
                           />
                         </div>
                       </div>
@@ -176,11 +186,9 @@
             </h2>
           </template>
 
-          <template #body> 
-          </template>
+          <template #body> </template>
 
-          <template #footer>
-          </template>
+          <template #footer> </template>
         </VueModal>
 
         <!-- <Footer></Footer> -->
@@ -202,7 +210,7 @@ export default {
     return {
       oldData: null,
       mergeData: null,
-      profilid: null,
+      profilid: 211508,
       finalList: {
         profil_id: null,
         id_MerchantProfil: null,
@@ -312,6 +320,12 @@ export default {
         "profilid",
         "profil_id",
       ],
+      isImage : [
+        'marchantRegistreCommercePhoto',
+        'MerchantLogo',
+        'mrch_interior_photo',
+        'mrch_exterior_photo'
+      ],
       displayNew: null,
       displayOld: null,
       isModalVisible: false,
@@ -328,25 +342,30 @@ export default {
       this.isModalVisible = true;
     },
     getMergeData() {
-      this.axios
-        .get("/v1/merge-manage", { params: { profil_id: this.profilid } })
-        .then((res) => {
-          this.mergeData = res.data.merge;
-          // this.mergeData.profil_id = this.mergeData.profilid;
+      const getData = async () =>
+        await this.axios
+          .get("/v1/merge-manage", { params: { profil_id: this.profilid } })
+          .then((res) => {
+            this.mergeData = res.data.merge;
+            // this.mergeData.profil_id = this.mergeData.profilid;
 
-          this.oldData = res.data.old;
-          // this.oldData.profil_id = this.oldData.profilid;
+            this.oldData = res.data.old;
+            // this.oldData.profil_id = this.oldData.profilid;
 
-          this.finalList.profil_id = this.oldData.profilid;
+            this.finalList.profil_id = this.oldData.profilid;
 
-          // alert(this.finalList.profil_id );
-        })
-        .catch((e) => {
-          if (e.response.data.code == 401) {
-            this.$router.push("connexion");
-          }
-          console.log(e?.response);
-        });
+            // alert(this.finalList.profil_id );
+
+            // console.log(this.$refs);
+          })
+          .catch((e) => {
+            console.log(e);
+            if (e?.response?.data?.code == 401) {
+              this.$router.push("connexion");
+            }
+            console.log(e?.response);
+          });
+      getData();
     },
     checkOtherValue(field_label, item) {
       if (field_label in this.finalList) {
@@ -404,16 +423,40 @@ export default {
       this.displayOld = !this.displayNew;
       //TODO  => Hide New
     },
-    searchMerge(){
-      // alert(profilId)
-        this.getMergeData()
+    searchMerge() {
+      this.getMergeData();
+      this.checkIsSimilar();
     },
     closeModal() {
       this.isModalVisible = false;
     },
+    checkIsSimilar() {
+
+      let o1 = this.oldData;
+      let o2 = this.mergeData;
+
+      let diff = Object.keys(o2).reduce((diff, key) => {
+        if (o1[key] === o2[key]) return diff;
+        return {
+          ...diff,
+          [key]: o2[key],
+        };
+      }, {});
+
+      Object.entries(diff).forEach(el =>  {
+        let $el = this.$refs[el[0]]
+
+        if(typeof $el != 'undefined'){
+          $el[0].style.backgroundColor = '#66bb6a'
+          $el[1].style.backgroundColor = '#66bb6a'
+        }
+      }
+      );
+
+    }
   },
   mounted() {
-    // this.getMergeData();
+    this.getMergeData();
   },
 };
 </script>
@@ -448,3 +491,4 @@ input[type="radio"] {
   justify-content: space-between;
 }
 </style>
+
